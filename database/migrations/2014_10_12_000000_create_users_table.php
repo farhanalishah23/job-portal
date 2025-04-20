@@ -20,6 +20,16 @@ return new class extends Migration
             $table->string('cover_letter')->nullable();
                  $table->string('status');
             $table->string('role');
+              $table->string('profile_title')->nullable();
+        $table->text('education')->nullable();
+        $table->text('past_experience')->nullable();
+        $table->string('skill_1')->nullable();
+        $table->string('skill_2')->nullable();
+        $table->string('skill_3')->nullable();
+        $table->text('about_me')->nullable();
+        $table->string('address')->nullable();
+        $table->string('phone_no')->nullable();
+        $table->string('image')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
