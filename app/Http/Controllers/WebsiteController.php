@@ -77,19 +77,19 @@ class WebsiteController extends Controller
 
     public function about()
     {
-        return view('website.about');
+        return view('Website.about');
     }
 
     public function contact()
     {
-        return view('website.contact');
+        return view('Website.contact');
     }
 
     public function postAJob()
     {
         $categories = Category::where('status', 'active')->get();
         $locations = Location::where('status', 'active')->get();
-        return view('website.post_job', compact('categories', 'locations'));
+        return view('Website.post_job', compact('categories', 'locations'));
     }
 
     public function addJob(Request $request)
@@ -179,39 +179,39 @@ class WebsiteController extends Controller
     public function jobs(Request $request)
     {
         $jobs = Job::where('status', 'active')->paginate(4);
-        return view('website.jobs', compact('jobs'));
+        return view('Website.jobs', compact('jobs'));
     }
 
     public function jobDetails($id = null)
     {
         $job = Job::find($id);
-        return view('website.job_detail', compact('job'));
+        return view('Website.job_detail', compact('job'));
     }
 
     public function createResume()
     {
-        return view('website.create_resume');
+        return view('Website.create_resume');
     }
 
     public function updateProfileSettings()
     {
-        return view('website.update_hr_profile');
+        return view('Website.update_hr_profile');
     }
 
     public function myResume()
     {
-        return view('website.my_resume');
+        return view('Website.my_resume');
     }
 
     public function JobAlerts()
     {
         $myAppliedJob = ApplyJob::where('user_id', auth()->id())->get();
-        return view('website.job_alert', compact('myAppliedJob'));
+        return view('Website.job_alert', compact('myAppliedJob'));
     }
 
     public function manageJobs()
     {
-        return view('website.manage_jobs');
+        return view('Website.manage_jobs');
     }
 
     public function fetchJobs()
@@ -223,13 +223,13 @@ class WebsiteController extends Controller
     public function manageApplications()
     {
         $appliedJobs = ApplyJob::where('hr_id', auth()->id())->paginate(5);
-        return view('website.manage_applications', compact('appliedJobs'));
+        return view('Website.manage_applications', compact('appliedJobs'));
     }
 
     public function viewAppliedJobs($id = null)
     {
         $viewAppliedJob = ApplyJob::find($id);
-        return view('website.view_applied_job', compact('viewAppliedJob'));
+        return view('Website.view_applied_job', compact('viewAppliedJob'));
     }
 
     public function updateAppliedJobStatus($id = null, $status = null)
@@ -275,7 +275,7 @@ class WebsiteController extends Controller
         if ($alreadyApplied) {
             return redirect()->back()->with('message', 'You already applied for this job');
         }
-        return view('website.apply_job', compact('job'));
+        return view('Website.apply_job', compact('job'));
     }
 
 
