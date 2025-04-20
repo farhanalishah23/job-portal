@@ -1,4 +1,4 @@
-@extends('website.layout.master')
+@extends('Website.layout.master')
 @push('css')
 <style>
     #google-map,
