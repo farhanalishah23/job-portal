@@ -280,49 +280,52 @@ class WebsiteController extends Controller
     }
 
 
-    public function applyForJob(Request $request)
-    {
-        $alreadyApplied = ApplyJob::where('status', 'applied')->where('job_id', $request->id)->where('user_id', auth()->id())->first();
-        if ($alreadyApplied) {
-            return redirect()->back()->with('message', 'You already applied for this job');
-        }
-        $path = null;
-        if ($request->hasFile('job_attachment')) {
-            $file = $request->file('job_attachment');
+  public function applyForJob(Request $request)
+{
+    // Check if user already applied
+    $alreadyApplied = ApplyJob::where('status', 'applied')
+        ->where('job_id', $request->id)
+        ->where('user_id', auth()->id())
+        ->first();
 
-            // Define the destination path
-            $destinationPath = public_path('uploads/job_attachments');
-
-            // Ensure the directory exists
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0777, true); // Create directory if not exists
-            }
-
-            // Move the file to the destination folder
-            $fileName = $file->getClientOriginalName();
-            $file->move($destinationPath, $fileName);
-
-            // Optionally, store the file path in the database or return a success message
-            $path = 'uploads/job_attachments/' . $fileName;
-        }
-        $applyJob = ApplyJob::create([
-            'job_id' => $request->id,
-            'user_id' => auth()->id(),
-            'hr_id' => $request->hr_id,
-            'candidate_name' => $request->candidate_name,
-            'candidate_email' => $request->candidate_email,
-            'education' => $request->education,
-            'qualification' => $request->qualification,
-            'cover_letter' => $request->cover_letter,
-            'status' => 'applied',
-            'job_attachment' => $path,
-        ]);
-        if ($applyJob) {
-            return redirect()->route('job_detail', [$request->id])->with('message', 'You applied for this job.');
-        } else {
-            return redirect()->back()->with('message', 'Your job has not been submitted.');
-        }
+    if ($alreadyApplied) {
+        return redirect()->back()->with('message', 'You already applied for this job');
     }
+
+    $path = null;
+
+    // Upload file to S3 if provided
+    if ($request->hasFile('job_attachment')) {
+        $file = $request->file('job_attachment');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+
+        // Save to S3 'job_attachments' folder
+        $path = $file->storeAs('job_attachments', $fileName, 's3');
+
+        // Optionally get the full URL
+        $path = Storage::disk('s3')->url($path);
+    }
+
+    // Create job application
+    $applyJob = ApplyJob::create([
+        'job_id' => $request->id,
+        'user_id' => auth()->id(),
+        'hr_id' => $request->hr_id,
+        'candidate_name' => $request->candidate_name,
+        'candidate_email' => $request->candidate_email,
+        'education' => $request->education,
+        'qualification' => $request->qualification,
+        'cover_letter' => $request->cover_letter,
+        'status' => 'applied',
+        'job_attachment' => $path,
+    ]);
+
+    if ($applyJob) {
+        return redirect()->route('job_detail', [$request->id])->with('message', 'You applied for this job.');
+    } else {
+        return redirect()->back()->with('message', 'Your job application could not be submitted.');
+    }
+}
 
     public function checkEmail(Request $request)
     {
