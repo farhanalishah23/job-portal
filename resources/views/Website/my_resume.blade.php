@@ -25,7 +25,7 @@
               <div class="inner-box my-resume">
                 <div class="author-resume">
                   <div class="thumb">
-                    <img src="{{ asset(auth()->user()->image) }}" alt="Profile Image" height="100px">
+                    <img src="{{ asset('storage/' . auth()->user()->image) }}" alt="Profile Image" height="100px">
                   </div>
                   <div class="author-info">
                     <h3>{{auth()->user()->name ?? null}}</h3>
