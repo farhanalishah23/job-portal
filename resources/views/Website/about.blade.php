@@ -1,4 +1,4 @@
-@extends('website.layout.master')
+@extends('Website.layout.master')
 @section('content')
  <!-- Page Header Start -->
  <div class="page-header" style="background: url(assets/img/banner1.jpg);">
