@@ -72,7 +72,7 @@ class WebsiteController extends Controller
     public function index()
     {
         $jobs = Job::where('status', 'active')->paginate(4);
-        return view('website.index', compact('jobs'))->with('showWtag', true);
+        return view('Website.index', compact('jobs'))->with('showWtag', true);
     }
 
     public function about()
