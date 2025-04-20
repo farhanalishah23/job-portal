@@ -280,9 +280,8 @@ class WebsiteController extends Controller
     }
 
 
-  public function applyForJob(Request $request)
+public function applyForJob(Request $request)
 {
-    // Check if user already applied
     $alreadyApplied = ApplyJob::where('status', 'applied')
         ->where('job_id', $request->id)
         ->where('user_id', auth()->id())
@@ -294,19 +293,18 @@ class WebsiteController extends Controller
 
     $path = null;
 
-    // Upload file to S3 if provided
     if ($request->hasFile('job_attachment')) {
         $file = $request->file('job_attachment');
         $fileName = time() . '_' . $file->getClientOriginalName();
 
-        // Save to S3 'job_attachments' folder
-        $path = $file->storeAs('job_attachments', $fileName, 's3');
+        // Store file temporarily in /tmp
+        $destinationPath = '/tmp';
+        $file->move($destinationPath, $fileName);
 
-        // Optionally get the full URL
-        $path = Storage::disk('s3')->url($path);
+        // You can store the path or filename if needed
+        $path = '/tmp/' . $fileName;
     }
 
-    // Create job application
     $applyJob = ApplyJob::create([
         'job_id' => $request->id,
         'user_id' => auth()->id(),
@@ -326,6 +324,7 @@ class WebsiteController extends Controller
         return redirect()->back()->with('message', 'Your job application could not be submitted.');
     }
 }
+
 
     public function checkEmail(Request $request)
     {
