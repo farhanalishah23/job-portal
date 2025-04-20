@@ -34,10 +34,15 @@
                 <div class="form-group is-empty">
                   <label class="control-label" for="textarea">Profile Image</label>
                   <input type="file" name="profile_image" class="form-control">
-                                   <img src="{{ 
-    Storage::disk('public')->exists(Auth::user()->image) 
-    ? asset('storage/' . Auth::user()->image) 
-    : 'https://img.freepik.com/premium-vector/silver-membership-icon-default-avatar-profile-icon-membership-icon-social-media-user-image-vector-illustration_561158-4195.jpg?semt=ais_hybrid&w=740' 
+                                 @php
+    $userImage = Auth::user()->image;
+    $imageExists = $userImage && Storage::disk('public')->exists($userImage);
+@endphp
+
+<img src="{{ 
+    $imageExists
+        ? asset('storage/' . $userImage)
+        : 'https://img.freepik.com/premium-vector/silver-membership-icon-default-avatar-profile-icon-membership-icon-social-media-user-image-vector-illustration_561158-4195.jpg?semt=ais_hybrid&w=740' 
 }}" alt="User Image" height="150">
                 </div>
                 <div class="form-group is-empty">
