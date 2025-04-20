@@ -130,7 +130,7 @@ class WebsiteController extends Controller
         if ($job) {
             $categories = Category::where('status', 'active')->get();
             $locations = Location::where('status', 'active')->get();
-            return view('website.edit_job', compact('job', 'categories', 'locations'));
+            return view('Website.edit_job', compact('job', 'categories', 'locations'));
         }
         return redirect()->back()->with(['title' => 'Failed!',  'message' => 'Unable to edit Job', 'icon' => 'error']);
     }
