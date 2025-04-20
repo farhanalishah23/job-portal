@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Middleware\TrustProxies as Middleware;
-use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Request; // ✅ Yeh use karo, Laravel wala nahi
 
 class TrustProxies extends Middleware
 {
@@ -12,12 +12,12 @@ class TrustProxies extends Middleware
      *
      * @var array<int, string>|string|null
      */
-    protected $proxies = '*'; // ⭐️ All proxies trusted (important for Railway)
+    protected $proxies = '*'; // ⭐️ Trust all proxies (e.g. Railway)
 
     /**
      * The headers that should be used to detect proxies.
      *
      * @var int
      */
-    protected $headers = Request::HEADER_X_FORWARDED_ALL;
+    protected $headers = Request::HEADER_X_FORWARDED_ALL; // ✅ Yeh ab sahi chalega
 }
