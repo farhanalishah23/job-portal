@@ -183,43 +183,5 @@
         </div>
     </div>
 @endsection
-<!-- @push('js')
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $('#email').on('blur', function () {
-            const email = $(this).val();
-            const helpEmail = $('#helpEmail');
-            const registerBtn = $('#register_btn');
-            
-            if (email === '') {
-                helpEmail.text('').css('color', '');
-                registerBtn.prop('disabled', true);
-                return;
-            }
 
-            $.ajax({
-                url: "{{ route('check_email') }}",
-                method: 'POST',
-                data: {
-                    check_email: email,
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function (response) {
-                    if (response.isAvailable) {
-                        helpEmail.text('').css('color', '');
-                        registerBtn.prop('disabled', false);
-                    } else {
-                        helpEmail.text('This email has already been taken by someone').css('color', 'red');
-                        registerBtn.prop('disabled', true);
-                    }
-                },
-                error: function () {
-                    registerBtn.prop('disabled', true);
-                }
-            });
-        });
-    });
-</script> -->
 
-@endpush
