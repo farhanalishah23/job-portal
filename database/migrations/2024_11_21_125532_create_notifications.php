@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('from');
             $table->string('admin_message');
             $table->string('hr_message');
+             $table->string('job_id');
             $table->timestamps();
         });
     }
