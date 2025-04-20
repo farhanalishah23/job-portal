@@ -8,6 +8,7 @@ use App\Models\ApplyJob;
 use App\Models\Category;
 use App\Models\User;
 use App\Models\Notification;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use App\Models\Location;
 use Illuminate\Http\Request;
@@ -330,49 +331,50 @@ class WebsiteController extends Controller
     }
 
     public function updateUserProfile(Request $request)
-    {
-        extract($request->all());
-        $user = User::find($id);
-        if ($user) {
-            $path = null;
-            if ($request->hasFile('profile_image')) {
-                $file = $request->file('profile_image');
+{
+    $user = User::find($request->id);
 
-                // Define the destination path
-                $destinationPath = public_path('uploads/profile_images');
-
-                // Ensure the directory exists
-                if (!file_exists($destinationPath)) {
-                    mkdir($destinationPath, 0777, true); // Create directory if not exists
-                }
-
-                // Move the file to the destination folder
-                $fileName = $file->getClientOriginalName();
-                $file->move($destinationPath, $fileName);
-
-                // Optionally, store the file path in the database or return a success message
-                $path = 'uploads/profile_images/' . $fileName;
-            }
-            $user->update([
-                'profile_title' => $profile_title ?? $user->profile_title,
-                'name' => $name ?? $user->name,
-                'email' => $email ?? $user->email,
-                'education' => $education ?? $user->education,
-                'past_experience' => $past_experience ?? $user->experience,
-                'skill_1' => $skill_one ?? $user->skill_1,
-                'skill_2' => $skill_two ?? $user->skill_2,
-                'skill_3' => $skill_three ?? $user->skill_3,
-                'about_me' => $about_me ?? $user->about_me,
-                'address' => $address ?? $user->address,
-                'phone_no' => $phone_no ?? $user->phone_no,
-                'image' => $path ?? $user->image,
-                'cover_letter' => $cover_letter ?? $user->cover_letter,
-            ]);
-            return redirect()->route('my_resume')->with(['title' => 'Success', 'message' => 'Profile updated successfully.', 'icon' => 'success']);
-        }
-        return redirect()->back()->with(['title' => 'Error', 'message' => 'Profile has not been updated successfully.', 'icon' => 'error']);
+    if (!$user) {
+        return redirect()->back()->with([
+            'title' => 'Error',
+            'message' => 'User not found.',
+            'icon' => 'error'
+        ]);
     }
 
+    $path = $user->image; // default to old image
+
+    // Handle profile image upload
+    if ($request->hasFile('profile_image')) {
+        $file = $request->file('profile_image');
+
+        // Store the image in storage/app/public/profile_images
+        $path = $file->store('profile_images', 'public');
+    }
+
+    // Update user data
+    $user->update([
+        'profile_title'     => $request->input('profile_title', $user->profile_title),
+        'name'              => $request->input('name', $user->name),
+        'email'             => $request->input('email', $user->email),
+        'education'         => $request->input('education', $user->education),
+        'past_experience'   => $request->input('past_experience', $user->past_experience),
+        'skill_1'           => $request->input('skill_one', $user->skill_1),
+        'skill_2'           => $request->input('skill_two', $user->skill_2),
+        'skill_3'           => $request->input('skill_three', $user->skill_3),
+        'about_me'          => $request->input('about_me', $user->about_me),
+        'address'           => $request->input('address', $user->address),
+        'phone_no'          => $request->input('phone_no', $user->phone_no),
+        'image'             => $path,
+        'cover_letter'      => $request->input('cover_letter', $user->cover_letter),
+    ]);
+
+    return redirect()->route('my_resume')->with([
+        'title' => 'Success',
+        'message' => 'Profile updated successfully.',
+        'icon' => 'success'
+    ]);
+}
     public function updateHrProfile(Request $request)
     {
         // return $request->all();
