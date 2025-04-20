@@ -89,6 +89,7 @@ class LoginController extends Controller
             
     
         } catch (\Exception $e) {
+            dd($e->getMessage())
             return redirect()->route('login')->with('error', 'Something went wrong, please try again.');
         }
     }
