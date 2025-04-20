@@ -58,41 +58,53 @@ class LoginController extends Controller
 }
 
 
-    public function handleGoogleCallback()
-    {
-        try {
-            $googleUser = Socialite::driver('google')->stateless()->user();
-    
-            $user = User::where('email', $googleUser->email)->first();
-    
-            if (!$user) {
-                $user = User::create([
-                    'name' => $googleUser->name,
-                    'email' => $googleUser->email,
-                    'google_id' => $googleUser->id, 
-                    'role'=>'user',
-                    'password' => bcrypt(uniqid()), 
-                ]);
-            }
-    
-            auth()->login($user);
-    
-            if ($user->role === 'admin') {
-                return redirect()->route('dashboard');
-            } elseif ($user->role === 'hr') {
-                return redirect()->route('manage_jobs');
-            } elseif ($user->role === 'user') {
-                return redirect()->route('my_resume');
-            } else {
-                return redirect('/');
-            }
-            
-    
-        } catch (\Exception $e) {
-            dd($e->getMessage())
-            // return redirect()->route('login')->with('error', 'Something went wrong, please try again.');
+ public function handleGoogleCallback()
+{
+    try {
+        // Step 1: Get Google user data
+        $googleUser = Socialite::driver('google')->stateless()->user();
+
+        // Step 2: Dump full Google user data to check
+        // ⚠️ Ye line sirf debugging ke liye hai. Kaam ho jaye to hata dena.
+        dd($googleUser);
+
+        // Step 3: Find user in DB
+        $user = User::where('email', $googleUser->email)->first();
+
+        // Step 4: If user doesn't exist, create it
+        if (!$user) {
+            $user = User::create([
+                'name' => $googleUser->name,
+                'email' => $googleUser->email,
+                'google_id' => $googleUser->id, 
+                'role' => 'user',
+                'password' => bcrypt(uniqid()),
+            ]);
         }
+
+        // Step 5: Login the user
+        auth()->login($user);
+
+        // Step 6: Redirect based on role
+        if ($user->role === 'admin') {
+            return redirect()->route('dashboard');
+        } elseif ($user->role === 'hr') {
+            return redirect()->route('manage_jobs');
+        } elseif ($user->role === 'user') {
+            return redirect()->route('my_resume');
+        } else {
+            return redirect('/');
+        }
+
+    } catch (\Exception $e) {
+        // Step 7: Show exact error message
+        dd('Error: ' . $e->getMessage());
+        // Ya agar tu redirect karna chahta hai to:
+        // return redirect()->route('login')->with('error', $e->getMessage());
     }
+}
+
+
     
     
 }
