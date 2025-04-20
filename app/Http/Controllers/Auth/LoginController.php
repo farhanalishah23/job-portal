@@ -66,7 +66,7 @@ class LoginController extends Controller
 
         // Step 2: Dump full Google user data to check
         // ⚠️ Ye line sirf debugging ke liye hai. Kaam ho jaye to hata dena.
-        dd($googleUser);
+        // dd($googleUser);
 
         // Step 3: Find user in DB
         $user = User::where('email', $googleUser->email)->first();
