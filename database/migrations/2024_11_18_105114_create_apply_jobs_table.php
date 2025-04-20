@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('job_attachment');
             $table->text('status');
             $table->string('user_id');
-            $table->string('cover_letter');
+            $table->text('cover_letter');
             $table->string('hr_id');
             $table->timestamps();
         });
