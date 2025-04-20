@@ -381,41 +381,43 @@ class WebsiteController extends Controller
 }
 
     public function updateHrProfile(Request $request)
-    {
-        // return $request->all();
-        extract($request->all());
-        $user = User::find($id);
-        if ($user) {
-            $file = $request->file('profile_image');
+{
+    $user = User::find($request->id);
 
-            // Define the destination path
-            $destinationPath = public_path('uploads/profile_images');
-
-            // Ensure the directory exists
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0777, true); // Create directory if not exists
-            }
-
-            // Move the file to the destination folder
-            $fileName = $file->getClientOriginalName();
-            $file->move($destinationPath, $fileName);
-
-            // Optionally, store the file path in the database or return a success message
-            $path = 'uploads/profile_images/' . $fileName;
-
-            $user->update([
-                'profile_title' => $profile_title ?? $user->profile_title,
-                'name' => $name ?? $user->name,
-                'education' => $education ?? $user->education,
-                'about_me' => $about_me ?? $user->about_me,
-                'address' => $address ?? $user->address,
-                'phone_no' => $phone_no ?? $user->phone_no,
-                'image' => $path ?? $user->image,
-            ]);
-            return redirect()->route('manage_jobs')->with(['title' => 'Success', 'message' => 'Profile updated successfully.', 'icon' => 'success']);
-        }
-        return redirect()->back()->with(['title' => 'Error', 'message' => 'Profile has not been updated successfully.', 'icon' => 'error']);
+    if (!$user) {
+        return redirect()->back()->with([
+            'title' => 'Error',
+            'message' => 'User not found.',
+            'icon' => 'error'
+        ]);
     }
+
+    $path = $user->image; 
+
+    // Handle image upload
+    if ($request->hasFile('profile_image')) {
+        $file = $request->file('profile_image');
+        $path = $file->store('profile_images', 'public');
+    }
+
+    // Update user info
+    $user->update([
+        'profile_title' => $request->input('profile_title', $user->profile_title),
+        'name'          => $request->input('name', $user->name),
+        'education'     => $request->input('education', $user->education),
+        'about_me'      => $request->input('about_me', $user->about_me),
+        'address'       => $request->input('address', $user->address),
+        'phone_no'      => $request->input('phone_no', $user->phone_no),
+        'image'         => $path,
+    ]);
+
+    return redirect()->route('manage_jobs')->with([
+        'title' => 'Success',
+        'message' => 'Profile updated successfully.',
+        'icon' => 'success'
+    ]);
+}
+
 
     public function logout()
     {
