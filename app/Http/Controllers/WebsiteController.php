@@ -330,8 +330,9 @@ class WebsiteController extends Controller
         return response()->json(['isAvailable' => !$checkEmail]);
     }
 
-    public function updateUserProfile(Request $request)
+   public function updateUserProfile(Request $request)
 {
+    // Fetch user by ID
     $user = User::find($request->id);
 
     if (!$user) {
@@ -342,13 +343,15 @@ class WebsiteController extends Controller
         ]);
     }
 
-    $path = $user->image; // default to old image
+    $path = $user->image; // Default to old image
 
     // Handle profile image upload
     if ($request->hasFile('profile_image')) {
+        // Get file from request
         $file = $request->file('profile_image');
 
         // Store the image in storage/app/public/profile_images
+        // 'public' means the file will be stored in storage/app/public and accessible via a symlink in the public directory
         $path = $file->store('profile_images', 'public');
     }
 
@@ -369,12 +372,14 @@ class WebsiteController extends Controller
         'cover_letter'      => $request->input('cover_letter', $user->cover_letter),
     ]);
 
+    // Redirect to the resume page with success message
     return redirect()->route('my_resume')->with([
         'title' => 'Success',
         'message' => 'Profile updated successfully.',
         'icon' => 'success'
     ]);
 }
+
     public function updateHrProfile(Request $request)
     {
         // return $request->all();
