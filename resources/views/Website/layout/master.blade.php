@@ -281,7 +281,7 @@
             </div>
             <!-- Header Section End -->
             @if (!empty($showWtag) && $showWtag)
-                @include('website.layout.search')
+                @include('Website.layout.search')
             @endif
         </section>
         <!-- end intro section -->
