@@ -77,7 +77,8 @@ Auth::routes();
 
 
 Route::get('auth/google', [LoginController::class, 'redirectToGoogle'])->name('auth.google');
-Route::get('auth/google/call-back', [LoginController::class, 'handleGoogleCallback']);
+Route::get('auth/google/callback', [LoginController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+
 
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
