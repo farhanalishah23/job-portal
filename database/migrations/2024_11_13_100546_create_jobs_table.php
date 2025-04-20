@@ -22,6 +22,9 @@ return new class extends Migration
             $table->text('benefits');
             $table->string('status');
             $table->string('type');
+            $table->string('salary_offer');
+            $table->string('company_name');
+            $table->bigInteger('hr_id');
             $table->timestamps();
         });
     }

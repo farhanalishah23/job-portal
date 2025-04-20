@@ -20,6 +20,9 @@ return new class extends Migration
             $table->text('qualification');
             $table->text('job_attachment');
             $table->text('status');
+            $table->string('user_id');
+            $table->string('cover_letter');
+            $table->string('hr_id');
             $table->timestamps();
         });
     }
