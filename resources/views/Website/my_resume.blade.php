@@ -29,7 +29,7 @@
     Storage::disk('public')->exists(Auth::user()->image) 
     ? asset('storage/' . Auth::user()->image) 
     : 'https://img.freepik.com/premium-vector/silver-membership-icon-default-avatar-profile-icon-membership-icon-social-media-user-image-vector-illustration_561158-4195.jpg?semt=ais_hybrid&w=740' 
-}}" alt="User Image">
+}}" alt="User Image" height="150">
                   </div>
                   <div class="author-info">
                     <h3>{{auth()->user()->name ?? null}}</h3>
